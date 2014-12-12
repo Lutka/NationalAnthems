@@ -9,32 +9,41 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
-public class MapActivity extends FragmentActivity
+public class MapActivity extends FragmentActivity implements GoogleMap.OnMarkerClickListener, GoogleMap.OnInfoWindowClickListener
 {
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     EuropeCountries europeCountries = new EuropeCountries();
+    HashMap<Marker, Country> markerCountryHashMap = new HashMap<Marker, Country>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
         setUpMapIfNeeded();
 
+    }
+
+    public void playAnthem(Marker marker){
         try
         {
-            AssetFileDescriptor anthemFile = getAssets().openFd("pl.ogg");
+            String anthemId = markerCountryHashMap.get(marker).getAnthem();
+            AssetFileDescriptor anthemFile = getAssets().openFd(anthemId);
             MediaPlayer mediaPlayer = new MediaPlayer();
             mediaPlayer.setOnErrorListener(new MediaPlayer.OnErrorListener()
             {
@@ -48,7 +57,7 @@ public class MapActivity extends FragmentActivity
                 }
             });
             mediaPlayer.setDataSource(anthemFile.getFileDescriptor(),anthemFile.getStartOffset(),anthemFile.getLength());
-           // Log.i("Anthem "," Len "+ anthemFile.getLength());
+            // Log.i("Anthem "," Len "+ anthemFile.getLength());
             mediaPlayer.prepare();
             mediaPlayer.start();
         } catch (IOException e)
@@ -59,8 +68,8 @@ public class MapActivity extends FragmentActivity
                     .setMessage(e.getMessage())
                     .show();
         }
-
     }
+
 
     @Override
     protected void onResume()
@@ -108,20 +117,39 @@ public class MapActivity extends FragmentActivity
      */
     private void setUpMap()
     {
-        // mMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Marker"));
-
+        mMap.setOnMarkerClickListener(this);
+        mMap.setOnInfoWindowClickListener(this);
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(50.2139194, 15.8411428), 3.0f));
+
         addPins();
     }
 
     private void addPins()
     {
+        MarkerOptions markerOptions;
+        Marker marker;
         for (int i = 0; i < europeCountries.getNumberOfCountries(); i++)
         {
-            mMap.addMarker(new MarkerOptions().
-                    position(europeCountries.getEuropeanCountries()[i].getLocation()).
-                    title(europeCountries.getEuropeanCountries()[i].getName()));
+            markerOptions = new MarkerOptions()
+                    .position(europeCountries.getEuropeanCountries()[i].getLocation())
+                    .title(europeCountries.getEuropeanCountries()[i].getName());
+            marker = mMap.addMarker(markerOptions);
+
+            markerCountryHashMap.put(marker, europeCountries.getEuropeanCountries()[i]);
         }
+    }
+
+    @Override
+    public boolean onMarkerClick(Marker marker)
+    {
+       // Toast.makeText(this, marker.getTitle(), Toast.LENGTH_SHORT).show();
+        return false;
+    }
+
+    @Override
+    public void onInfoWindowClick(Marker marker)
+    {
+        playAnthem(marker);
     }
 
 }

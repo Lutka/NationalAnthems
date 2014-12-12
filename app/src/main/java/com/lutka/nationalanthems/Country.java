@@ -11,6 +11,8 @@ public class Country
     String code;
     LatLng location;
     boolean isEUMember;
+    String anthem;
+
 
     public Country(String name, String code, LatLng location, boolean isEUMember)
     {
@@ -18,6 +20,13 @@ public class Country
         this.code = code;
         this.location = location;
         this.isEUMember = isEUMember;
+        this.anthem = code +".ogg";
+    }
+
+
+    public String getAnthem()
+    {
+        return anthem;
     }
 
     public String getCode()
