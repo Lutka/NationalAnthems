@@ -22,12 +22,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class MapActivity extends FragmentActivity implements GoogleMap.OnMarkerClickListener, GoogleMap.OnInfoWindowClickListener
+public class MapActivity extends FragmentActivity implements GoogleMap.OnMarkerClickListener, GoogleMap.OnInfoWindowClickListener, GoogleMap.OnMapClickListener
 {
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     EuropeCountries europeCountries = new EuropeCountries();
     HashMap<Marker, Country> markerCountryHashMap = new HashMap<Marker, Country>();
+    private MediaPlayer mediaPlayer = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -40,33 +41,36 @@ public class MapActivity extends FragmentActivity implements GoogleMap.OnMarkerC
     }
 
     public void playAnthem(Marker marker){
-        try
+        if(mediaPlayer == null)
         {
-            String anthemId = markerCountryHashMap.get(marker).getAnthem();
-            AssetFileDescriptor anthemFile = getAssets().openFd(anthemId);
-            MediaPlayer mediaPlayer = new MediaPlayer();
-            mediaPlayer.setOnErrorListener(new MediaPlayer.OnErrorListener()
+            try
             {
-                @Override
-                public boolean onError(MediaPlayer mp, int what, int extra)
+                String anthemId = markerCountryHashMap.get(marker).getAnthem();
+                AssetFileDescriptor anthemFile = getAssets().openFd(anthemId);
+                mediaPlayer = new MediaPlayer();
+                mediaPlayer.setOnErrorListener(new MediaPlayer.OnErrorListener()
                 {
-                    new AlertDialog.Builder(MapActivity.this)
-                            .setMessage("an error, what" + what + "extra " +extra)
-                            .show();
-                    return false;
-                }
-            });
-            mediaPlayer.setDataSource(anthemFile.getFileDescriptor(),anthemFile.getStartOffset(),anthemFile.getLength());
-            // Log.i("Anthem "," Len "+ anthemFile.getLength());
-            mediaPlayer.prepare();
-            mediaPlayer.start();
-        } catch (IOException e)
-        {
-            e.printStackTrace();
+                    @Override
+                    public boolean onError(MediaPlayer mp, int what, int extra)
+                    {
+                        new AlertDialog.Builder(MapActivity.this)
+                                .setMessage("an error, what" + what + "extra " + extra)
+                                .show();
+                        return false;
+                    }
+                });
+                mediaPlayer.setDataSource(anthemFile.getFileDescriptor(), anthemFile.getStartOffset(), anthemFile.getLength());
+                // Log.i("Anthem "," Len "+ anthemFile.getLength());
+                mediaPlayer.prepare();
+                mediaPlayer.start();
+            } catch (IOException e)
+            {
+                e.printStackTrace();
 
-            new AlertDialog.Builder(MapActivity.this)
-                    .setMessage(e.getMessage())
-                    .show();
+                new AlertDialog.Builder(MapActivity.this)
+                        .setMessage(e.getMessage())
+                        .show();
+            }
         }
     }
 
@@ -109,16 +113,11 @@ public class MapActivity extends FragmentActivity implements GoogleMap.OnMarkerC
         }
     }
 
-    /**
-     * This is where we can add markers or lines, add listeners or move the camera. In this case, we
-     * just add a marker near Africa.
-     * <p/>
-     * This should only be called once and when we are sure that {@link #mMap} is not null.
-     */
     private void setUpMap()
     {
         mMap.setOnMarkerClickListener(this);
         mMap.setOnInfoWindowClickListener(this);
+        mMap.setOnMapClickListener(this);
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(50.2139194, 15.8411428), 3.0f));
 
         addPins();
@@ -152,4 +151,13 @@ public class MapActivity extends FragmentActivity implements GoogleMap.OnMarkerC
         playAnthem(marker);
     }
 
+    @Override
+    public void onMapClick(LatLng latLng)
+    {
+        if(mediaPlayer.isPlaying())
+        {
+            mediaPlayer.stop();
+            Toast.makeText(this, "mediaPlayer should stop", Toast.LENGTH_SHORT).show();
+        }
+    }
 }
