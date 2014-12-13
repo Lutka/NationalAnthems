@@ -141,6 +141,7 @@ public class MapActivity extends FragmentActivity implements GoogleMap.OnMarkerC
     @Override
     public boolean onMarkerClick(Marker marker)
     {
+        stopMediaPlayer();
        // Toast.makeText(this, marker.getTitle(), Toast.LENGTH_SHORT).show();
         return false;
     }
@@ -154,10 +155,19 @@ public class MapActivity extends FragmentActivity implements GoogleMap.OnMarkerC
     @Override
     public void onMapClick(LatLng latLng)
     {
-        if(mediaPlayer.isPlaying())
+        stopMediaPlayer();
+    }
+
+    public void stopMediaPlayer()
+    {
+        if(mediaPlayer != null)
         {
-            mediaPlayer.stop();
-            Toast.makeText(this, "mediaPlayer should stop", Toast.LENGTH_SHORT).show();
+            if (mediaPlayer.isPlaying())
+            {
+                mediaPlayer.stop();
+                mediaPlayer = null;
+                //Toast.makeText(this, "mediaPlayer should stop", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 }
