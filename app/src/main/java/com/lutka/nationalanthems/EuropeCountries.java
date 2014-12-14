@@ -1,11 +1,6 @@
 package com.lutka.nationalanthems;
 
-import android.content.Context;
-
 import com.google.android.gms.maps.model.LatLng;
-import com.lutka.nationalanthems.Country;
-
-import java.util.ArrayList;
 
 /**
  * Created by Paulina on 30/11/2014.
