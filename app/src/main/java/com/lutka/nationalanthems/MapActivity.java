@@ -4,11 +4,16 @@
 package com.lutka.nationalanthems;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.Context;
 import android.content.res.AssetFileDescriptor;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -40,7 +45,8 @@ public class MapActivity extends FragmentActivity implements GoogleMap.OnMarkerC
 
     }
 
-    public void playAnthem(Marker marker){
+    public void playAnthem(Marker marker)
+    {
         if(mediaPlayer == null)
         {
             try
@@ -127,6 +133,7 @@ public class MapActivity extends FragmentActivity implements GoogleMap.OnMarkerC
     {
         MarkerOptions markerOptions;
         Marker marker;
+        //zamienic na foreach
         for (int i = 0; i < europeCountries.getNumberOfCountries(); i++)
         {
             markerOptions = new MarkerOptions()
@@ -150,6 +157,7 @@ public class MapActivity extends FragmentActivity implements GoogleMap.OnMarkerC
     public void onInfoWindowClick(Marker marker)
     {
         playAnthem(marker);
+        showCountryDialog(this, markerCountryHashMap.get(marker));
     }
 
     @Override
@@ -169,5 +177,21 @@ public class MapActivity extends FragmentActivity implements GoogleMap.OnMarkerC
                 //Toast.makeText(this, "mediaPlayer should stop", Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    void showCountryDialog(Context context, Country country)
+    {
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View dialogView = inflater.inflate(R.layout.country_dialog, null);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setView(dialogView).setTitle(country.getName())
+                .setNegativeButton(R.string.close, null);
+        String flagName = country.getCode();
+        ImageView flag = (ImageView) dialogView.findViewById(R.id.flag);
+        int flagId = context.getResources().getIdentifier(flagName, "drawable", context.getPackageName());
+        flag.setImageResource(flagId);
+        final Dialog dialog = builder.create();
+        dialog.show();
     }
 }

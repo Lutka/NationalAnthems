@@ -3,5 +3,6 @@
 
     <string name="app_name">National Anthems</string>
     <string name="title_activity_map">Anthems</string>
+    <string name="close">Close</string>
 
 </resources>

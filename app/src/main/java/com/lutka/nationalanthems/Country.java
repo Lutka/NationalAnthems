@@ -1,5 +1,13 @@
 package com.lutka.nationalanthems;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.Context;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.ImageView;
+
+import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.model.LatLng;
 
 /**
@@ -20,7 +28,7 @@ public class Country
         this.code = code;
         this.location = location;
         this.isEUMember = isEUMember;
-        this.anthem = code +".ogg";
+        this.anthem = code + ".ogg";
     }
 
 
@@ -48,4 +56,5 @@ public class Country
     {
         return isEUMember;
     }
+
 }
