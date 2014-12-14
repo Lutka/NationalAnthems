@@ -1,13 +1,5 @@
 package com.lutka.nationalanthems;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.content.Context;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.ImageView;
-
-import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.model.LatLng;
 
 /**

@@ -6,6 +6,7 @@ package com.lutka.nationalanthems;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.res.AssetFileDescriptor;
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -157,7 +158,7 @@ public class MapActivity extends FragmentActivity implements GoogleMap.OnMarkerC
     public void onInfoWindowClick(Marker marker)
     {
         playAnthem(marker);
-        showCountryDialog(this, markerCountryHashMap.get(marker));
+        showCountryDialog(markerCountryHashMap.get(marker));
     }
 
     @Override
@@ -179,17 +180,26 @@ public class MapActivity extends FragmentActivity implements GoogleMap.OnMarkerC
         }
     }
 
-    void showCountryDialog(Context context, Country country)
+    void showCountryDialog(Country country)
     {
-        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
         View dialogView = inflater.inflate(R.layout.country_dialog, null);
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setView(dialogView).setTitle(country.getName())
-                .setNegativeButton(R.string.close, null);
+                .setNegativeButton(R.string.close, null)
+                .setOnDismissListener(new DialogInterface.OnDismissListener()
+                {
+                    @Override
+                    public void onDismiss(DialogInterface dialog)
+                    {
+                        dialog.cancel();
+                        stopMediaPlayer();
+                    }
+                });
         String flagName = country.getCode();
         ImageView flag = (ImageView) dialogView.findViewById(R.id.flag);
-        int flagId = context.getResources().getIdentifier(flagName, "drawable", context.getPackageName());
+        int flagId = getResources().getIdentifier(flagName, "drawable", getPackageName());
         flag.setImageResource(flagId);
         final Dialog dialog = builder.create();
         dialog.show();
