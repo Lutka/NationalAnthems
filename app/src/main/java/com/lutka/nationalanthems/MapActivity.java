@@ -2,7 +2,9 @@
  * Created by Paulina on 15/11/2014.
  */
 package com.lutka.nationalanthems;
-
+/*
+having a screen which have lyrics there and allow playing anthem again, required number of times - user input
+ */
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
