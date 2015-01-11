@@ -15,6 +15,7 @@ import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -195,6 +196,17 @@ public class MapActivity extends FragmentActivity implements GoogleMap.OnMarkerC
                         stopMediaPlayer();
                     }
                 });
+
+        // lyrics
+        TextView tvLyrics = (TextView) dialogView.findViewById(R.id.tvLyrics);
+        try
+        {
+            tvLyrics.setText(country.getLyrics(getAssets()));
+        } catch (IOException e)
+        {
+            tvLyrics.setText("");
+        }
+
         String flagName = country.getCode();
         ImageView flag = (ImageView) dialogView.findViewById(R.id.flag);
         int flagId = getResources().getIdentifier(flagName, "drawable", getPackageName());

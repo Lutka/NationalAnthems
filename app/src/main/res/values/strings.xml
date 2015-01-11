@@ -4,5 +4,18 @@
     <string name="app_name">National Anthems</string>
     <string name="title_activity_map">Anthems</string>
     <string name="close">Close</string>
+    <string name="lyrics_placeholder">Amhrán na bhFiann
+Soldiers are we,
+whose lives are pledged to Ireland,
+Some have come
+from a land beyond the wave,
+Sworn to be free,
+no more our ancient sireland,
+Shall shelter the despot or the slave.
+Tonight we man the "bearna baoil",[fn 4]
+In Erin\'s cause, come woe or weal,
+’Mid cannon\'s roar and rifles\' peal,
+We\'ll chant a soldier\'s song.
+</string>
 
 </resources>
