@@ -1,5 +1,7 @@
 package com.lutka.nationalanthems;
 
+import android.content.res.Resources;
+
 import com.google.android.gms.maps.model.LatLng;
 
 /**
@@ -30,5 +32,9 @@ public class EuropeCountries
     }
 
 
-
+    public void generateColorPalettes(Resources resources, String packageName)
+    {
+        for (Country country : europeanCountries)
+            country.generateColorPalette(resources, packageName);
+    }
 }

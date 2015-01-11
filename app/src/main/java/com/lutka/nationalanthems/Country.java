@@ -2,10 +2,15 @@ package com.lutka.nationalanthems;
 
 import android.content.res.AssetManager;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.BitmapDrawable;
+import android.support.v7.graphics.Palette;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.StyleSpan;
+import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
 
@@ -24,7 +29,7 @@ public class Country
     LatLng location;
     boolean isEUMember;
     String anthem;
-
+    Palette palette = null;
 
     public Country(String name, String code, LatLng location, boolean isEUMember)
     {
@@ -35,6 +40,13 @@ public class Country
         this.anthem = "ogg/" +code + ".ogg";
     }
 
+    public void generateColorPalette(Resources resources, String packageName)
+    {
+        BitmapDrawable drawable = (BitmapDrawable) resources.getDrawable(getFlagResourceId(resources, packageName));
+        Bitmap bitmap = drawable.getBitmap();
+        this.palette = Palette.generate(bitmap);
+        Log.i("Color palette", toString()+" palette: "+palette);
+    }
 
     public String getAnthem()
     {
@@ -95,7 +107,59 @@ public class Country
 
     public int getFlagResourceId(Resources resources, String packageName)
     {
-        return resources.getIdentifier(this.code, "drawable", packageName);
+        int id = resources.getIdentifier(this.code, "drawable", packageName);
+        if (id == 0)
+            throw new Resources.NotFoundException("Cannot find flag for country "+name+". Code: "+code);
+        else
+            return id;
     }
 
+    private Palette.Swatch getSwatch()
+    {
+        if (palette == null) return null;
+        else if (palette.getLightMutedSwatch() != null)
+            return palette.getLightMutedSwatch();
+        else if (palette.getDarkVibrantSwatch() != null)
+            return palette.getDarkVibrantSwatch();
+        else if (palette.getVibrantSwatch() != null)
+            return palette.getVibrantSwatch();
+        else if (palette.getSwatches().isEmpty())
+            return null;
+        else
+            return palette.getSwatches().get(0);
+    }
+
+    public int getColor()
+    {
+        Palette.Swatch swatch = getSwatch();
+        if (swatch == null)
+            return Color.RED;
+        else
+        {
+            return swatch.getRgb();
+        }
+    }
+
+    public float getHue()
+    {
+        try
+        {
+            return getSwatch().getHsl()[0];
+        }
+        catch (Exception e)
+        {
+            return 0f;
+        }
+    }
+
+    public Palette getPalette()
+    {
+        return palette;
+    }
+
+    @Override
+    public String toString()
+    {
+        return name;
+    }
 }
