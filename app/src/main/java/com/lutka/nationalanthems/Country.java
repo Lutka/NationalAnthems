@@ -20,7 +20,7 @@ public class Country
         this.code = code;
         this.location = location;
         this.isEUMember = isEUMember;
-        this.anthem = code + ".ogg";
+        this.anthem = "ogg/" +code + ".ogg";
     }
 
 
