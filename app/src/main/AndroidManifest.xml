@@ -27,6 +27,7 @@
 
         <activity
             android:name="com.lutka.nationalanthems.MapActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:label="@string/title_activity_map" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
