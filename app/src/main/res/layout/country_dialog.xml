@@ -10,8 +10,8 @@
     android:layout_marginRight="8dp">
 
     <ImageView
-        android:layout_width="150dp"
-        android:layout_height="80dp"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
         android:id="@+id/flag"
         android:src="@drawable/ie"
         android:layout_gravity="center"
@@ -35,12 +35,16 @@
             android:layout_height="wrap_content"/>
     </LinearLayout>
 
-    <TextView
-        android:layout_margin="8dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/lyrics_placeholder"
-        android:id="@+id/tvLyrics"
-        android:layout_gravity="center_horizontal"/>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <TextView
+            android:layout_margin="8dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/lyrics_placeholder"
+            android:id="@+id/tvLyrics"
+            android:layout_gravity="center_horizontal"/>
+        </ScrollView>
 
 </LinearLayout>
