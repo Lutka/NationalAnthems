@@ -5,16 +5,20 @@ package com.lutka.nationalanthems;
 /*
 having a screen which have lyrics there and allow playing anthem again, required number of times - user input
  */
+
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.res.AssetFileDescriptor;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -26,6 +30,8 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class MapActivity extends FragmentActivity implements GoogleMap.OnMarkerClickListener, GoogleMap.OnInfoWindowClickListener, GoogleMap.OnMapClickListener
 {
@@ -34,6 +40,10 @@ public class MapActivity extends FragmentActivity implements GoogleMap.OnMarkerC
     EuropeCountries europeCountries = new EuropeCountries();
     HashMap<Marker, Country> markerCountryHashMap = new HashMap<Marker, Country>();
     private MediaPlayer mediaPlayer = null;
+    View mediaControlLayout = null;
+    Timer mediaControlUpdateTimer = null;
+    // ui handler handles task from timer thread and executes is in the ui thread to update media controls
+    Handler uiHandler = new Handler();
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -69,6 +79,23 @@ public class MapActivity extends FragmentActivity implements GoogleMap.OnMarkerC
                 // Log.i("Anthem "," Len "+ anthemFile.getLength());
                 mediaPlayer.prepare();
                 mediaPlayer.start();
+                mediaControlUpdateTimer = new Timer();
+                mediaControlUpdateTimer.schedule(new TimerTask()
+                {
+                    @Override
+                    public void run()
+                    {
+                        // execute in main thread
+                        uiHandler.post(new Runnable()
+                        {
+                            @Override
+                            public void run()
+                            {
+                                updateMediaControl(mediaPlayer);
+                            }
+                        });
+                    }
+                }, 0, 200);
             } catch (IOException e)
             {
                 e.printStackTrace();
@@ -170,11 +197,69 @@ public class MapActivity extends FragmentActivity implements GoogleMap.OnMarkerC
     {
         if(mediaPlayer != null)
         {
+            mediaPlayer.stop();
+            mediaPlayer = null;
+            mediaControlUpdateTimer.cancel();
+            mediaControlUpdateTimer = null;
+        }
+    }
+
+
+    void updateMediaControl(final MediaPlayer mediaPlayer)
+    {
+        if (this.mediaControlLayout != null)
+        {
+            ImageButton imageButton = (ImageButton) mediaControlLayout.findViewById(R.id.btnStartStop);
+            SeekBar seekBar = (SeekBar) mediaControlLayout.findViewById(R.id.seekBar);
+
+            seekBar.setMax(mediaPlayer.getDuration());
+            seekBar.setProgress(mediaPlayer.getCurrentPosition());
+            seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener()
+            {
+                @Override
+                public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser)
+                {
+
+                }
+
+                @Override
+                public void onStartTrackingTouch(SeekBar seekBar)
+                {
+
+                }
+
+                @Override
+                public void onStopTrackingTouch(SeekBar seekBar)
+                {
+                    mediaPlayer.seekTo(seekBar.getProgress());
+                }
+            });
+
             if (mediaPlayer.isPlaying())
             {
-                mediaPlayer.stop();
-                mediaPlayer = null;
-                //Toast.makeText(this, "mediaPlayer should stop", Toast.LENGTH_SHORT).show();
+                imageButton.setImageResource(android.R.drawable.ic_media_pause);
+                imageButton.setOnClickListener(new View.OnClickListener()
+                {
+                    @Override
+                    public void onClick(View v)
+                    {
+                        mediaPlayer.pause();
+                        updateMediaControl(mediaPlayer);
+                    }
+                });
+            }
+            else
+            {
+                imageButton.setImageResource(android.R.drawable.ic_media_play);
+                imageButton.setOnClickListener(new View.OnClickListener()
+                {
+                    @Override
+                    public void onClick(View v)
+                    {
+                        mediaPlayer.start();
+                        updateMediaControl(mediaPlayer);
+                    }
+                });
             }
         }
     }
@@ -192,11 +277,13 @@ public class MapActivity extends FragmentActivity implements GoogleMap.OnMarkerC
                     @Override
                     public void onDismiss(DialogInterface dialog)
                     {
+                        mediaControlLayout = null;
                         dialog.cancel();
                         stopMediaPlayer();
                     }
                 });
 
+        this.mediaControlLayout = dialogView.findViewById(R.id.layoutMediaControl);
         // lyrics
         TextView tvLyrics = (TextView) dialogView.findViewById(R.id.tvLyrics);
         try
