@@ -65,8 +65,7 @@ public class MapActivity extends FragmentActivity implements GoogleMap.OnMarkerC
         {
             try
             {
-                String anthemId = markerCountryHashMap.get(marker).getAnthem();
-                AssetFileDescriptor anthemFile = getAssets().openFd(anthemId);
+                AssetFileDescriptor anthemFile = markerCountryHashMap.get(marker).getAnthem(getAssets());
                 mediaPlayer = new MediaPlayer();
                 mediaPlayer.setOnErrorListener(new MediaPlayer.OnErrorListener()
                 {
@@ -103,10 +102,6 @@ public class MapActivity extends FragmentActivity implements GoogleMap.OnMarkerC
             } catch (IOException e)
             {
                 e.printStackTrace();
-
-                new AlertDialog.Builder(MapActivity.this)
-                        .setMessage(e.getMessage())
-                        .show();
             }
         }
     }
@@ -298,6 +293,8 @@ public class MapActivity extends FragmentActivity implements GoogleMap.OnMarkerC
                 });
 
         this.mediaControlLayout = dialogView.findViewById(R.id.layoutMediaControl);
+        if (country.anthemExists(getAssets()) == false)
+            mediaControlLayout.setVisibility(View.GONE);
         // lyrics
         TextView tvLyrics = (TextView) dialogView.findViewById(R.id.tvLyrics);
         try

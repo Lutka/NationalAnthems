@@ -1,5 +1,6 @@
 package com.lutka.nationalanthems;
 
+import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -51,6 +52,28 @@ public class Country
     public String getAnthem()
     {
         return anthem;
+    }
+
+    public AssetFileDescriptor getAnthem(AssetManager assetManager) throws IOException
+    {
+        return assetManager.openFd(anthem);
+    }
+
+    /**
+     * Checks if anthem file is present
+     * @param assets
+     * @return
+     */
+    public boolean anthemExists(AssetManager assets)
+    {
+        try
+        {
+            getAnthem(assets);
+            return true;
+        } catch (IOException e)
+        {
+            return false;
+        }
     }
 
     public String getCode()
