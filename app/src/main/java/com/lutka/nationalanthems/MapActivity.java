@@ -297,10 +297,8 @@ public class MapActivity extends FragmentActivity implements GoogleMap.OnMarkerC
             tvLyrics.setText("");
         }
 
-        String flagName = country.getCode();
         ImageView flag = (ImageView) dialogView.findViewById(R.id.flag);
-        int flagId = getResources().getIdentifier(flagName, "drawable", getPackageName());
-        flag.setImageResource(flagId);
+        flag.setImageResource(country.getFlagResourceId(getResources(), getPackageName()));
         final Dialog dialog = builder.create();
         dialog.show();
     }

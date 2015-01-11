@@ -1,6 +1,7 @@
 package com.lutka.nationalanthems;
 
 import android.content.res.AssetManager;
+import android.content.res.Resources;
 import android.graphics.Typeface;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -90,6 +91,11 @@ public class Country
             return spannableString;
         }
         else return string;
+    }
+
+    public int getFlagResourceId(Resources resources, String packageName)
+    {
+        return resources.getIdentifier(this.code, "drawable", packageName);
     }
 
 }
