@@ -14,6 +14,7 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageButton;
@@ -24,6 +25,7 @@ import android.widget.TextView;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -51,6 +53,8 @@ public class MapActivity extends FragmentActivity implements GoogleMap.OnMarkerC
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
+
+        europeCountries.generateColorPalettes(getResources(), getPackageName());
         setUpMapIfNeeded();
 
     }
@@ -164,14 +168,18 @@ public class MapActivity extends FragmentActivity implements GoogleMap.OnMarkerC
         MarkerOptions markerOptions;
         Marker marker;
         //zamienic na foreach
-        for (int i = 0; i < europeCountries.getNumberOfCountries(); i++)
+        for (Country country : europeCountries.getEuropeanCountries())
         {
+            float hue = country.getHue();
+            Log.i("Marker", country.toString()+" hue: "+hue);
+            Log.i("Marker", country.toString()+" color: "+country.getColor());
             markerOptions = new MarkerOptions()
-                    .position(europeCountries.getEuropeanCountries()[i].getLocation())
-                    .title(europeCountries.getEuropeanCountries()[i].getName());
+                    .position(country.getLocation())
+                    .icon(BitmapDescriptorFactory.defaultMarker(hue))
+                    .title(country.getName());
             marker = mMap.addMarker(markerOptions);
 
-            markerCountryHashMap.put(marker, europeCountries.getEuropeanCountries()[i]);
+            markerCountryHashMap.put(marker, country);
         }
     }
 
