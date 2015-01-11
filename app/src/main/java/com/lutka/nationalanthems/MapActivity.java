@@ -11,6 +11,7 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.res.AssetFileDescriptor;
 import android.media.MediaPlayer;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
@@ -54,8 +55,31 @@ public class MapActivity extends FragmentActivity implements GoogleMap.OnMarkerC
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
 
-        europeCountries.generateColorPalettes(getResources(), getPackageName());
         setUpMapIfNeeded();
+
+        new AsyncTask<Void, Country, Void>()
+        {
+            @Override
+            protected Void doInBackground(Void... params)
+            {
+                europeCountries.generateColorPalettes(getResources(), getPackageName(), new EuropeCountries.CountryColorPaletteListener()
+                {
+                    @Override
+                    public void onPaletteLoaded(Country country)
+                    {
+                        publishProgress(country);
+                    }
+                });
+                return null;
+            }
+
+            @Override
+            protected void onProgressUpdate(Country... values)
+            {
+                super.onProgressUpdate(values);
+                addCountryPin(values[0]);
+            }
+        }.execute();
 
     }
 
@@ -111,7 +135,6 @@ public class MapActivity extends FragmentActivity implements GoogleMap.OnMarkerC
     protected void onResume()
     {
         super.onResume();
-        setUpMapIfNeeded();
     }
 
     /**
@@ -155,29 +178,30 @@ public class MapActivity extends FragmentActivity implements GoogleMap.OnMarkerC
         mMap.getUiSettings().setZoomControlsEnabled(true);
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(50.2139194, 15.8411428), 3.0f));
 
-        addPins();
+    }
+
+    void addCountryPin(Country country)
+    {
+        float hue = country.getHue();
+        Log.i("Marker", country.toString() + " hue: " + hue);
+        Log.i("Marker", country.toString()+" color: "+country.getColor());
+        // normalize colors as google maps only accepts values between 0 and 360
+        while (hue < 0f) hue += 360f;
+        while (hue > 360f) hue -= 360f;
+        MarkerOptions markerOptions = new MarkerOptions()
+                .position(country.getLocation())
+                .icon(BitmapDescriptorFactory.defaultMarker(hue))
+                .title(country.getName());
+        Marker marker = mMap.addMarker(markerOptions);
+
+        markerCountryHashMap.put(marker, country);
     }
 
     private void addPins()
     {
-        MarkerOptions markerOptions;
-        Marker marker;
-        //zamienic na foreach
         for (Country country : europeCountries.getEuropeanCountries())
         {
-            float hue = country.getHue();
-            Log.i("Marker", country.toString()+" hue: "+hue);
-            Log.i("Marker", country.toString()+" color: "+country.getColor());
-            // normalize colors as google maps only accepts values between 0 and 360
-            while (hue < 0f) hue += 360f;
-            while (hue > 360f) hue -= 360f;
-            markerOptions = new MarkerOptions()
-                    .position(country.getLocation())
-                    .icon(BitmapDescriptorFactory.defaultMarker(hue))
-                    .title(country.getName());
-            marker = mMap.addMarker(markerOptions);
-
-            markerCountryHashMap.put(marker, country);
+            addCountryPin(country);
         }
     }
 

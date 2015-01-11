@@ -9,6 +9,11 @@ import com.google.android.gms.maps.model.LatLng;
  */
 public class EuropeCountries
 {
+    public static interface CountryColorPaletteListener
+    {
+        void onPaletteLoaded(Country country);
+    }
+
     final Country [] europeanCountries;
 
     public Country[] getEuropeanCountries()
@@ -60,9 +65,13 @@ public class EuropeCountries
     }
 
 
-    public void generateColorPalettes(Resources resources, String packageName)
+    public void generateColorPalettes(Resources resources, String packageName, CountryColorPaletteListener countryColorPaletteListener)
     {
         for (Country country : europeanCountries)
+        {
             country.generateColorPalette(resources, packageName);
+            if (countryColorPaletteListener != null)
+                countryColorPaletteListener.onPaletteLoaded(country);
+        }
     }
 }
