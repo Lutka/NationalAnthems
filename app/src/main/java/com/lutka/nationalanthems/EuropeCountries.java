@@ -64,6 +64,7 @@ public class EuropeCountries
                 new Country("Slovenia", "si", new LatLng(46.0661174,14.5320991), true),
                 new Country("Moldova", "md", new LatLng(46.9998691,28.8581765), true),
                 new Country("Slovakia", "sk", new LatLng(48.1357804,17.1159171), true),
+                new Country("Bosnia and Herzegovina", "ba", new LatLng(43.851882,18.383925), true),
         };
 
     }
