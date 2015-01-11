@@ -56,6 +56,14 @@ public class EuropeCountries
                 new Country("Luxemburg", "lu", new LatLng(49.6076049,6.1358701), true),
                 new Country("Denmark", "dk", new LatLng(55.6712673,12.5608388), true),
                 new Country("Malta", "mt", new LatLng(35.9440174,14.3795242), true),
+                new Country("Albania", "al", new LatLng(41.1529058,20.1605717), true),
+                new Country("Macedonia", "mk", new LatLng(41.9990903,21.4248903), true),
+                new Country("Russia", "ru", new LatLng(55.749792,37.632495), true),
+                new Country("Vatican", "va", new LatLng(41.9038795,12.4520834), true),
+                new Country("Andorra", "ad", new LatLng(42.5422699,1.5976721), true),
+                new Country("Slovenia", "si", new LatLng(46.0661174,14.5320991), true),
+                new Country("Moldova", "md", new LatLng(46.9998691,28.8581765), true),
+                new Country("Slovakia", "sk", new LatLng(48.1357804,17.1159171), true),
         };
 
     }
