@@ -173,6 +173,9 @@ public class MapActivity extends FragmentActivity implements GoogleMap.OnMarkerC
             float hue = country.getHue();
             Log.i("Marker", country.toString()+" hue: "+hue);
             Log.i("Marker", country.toString()+" color: "+country.getColor());
+            // normalize colors as google maps only accepts values between 0 and 360
+            while (hue < 0f) hue += 360f;
+            while (hue > 360f) hue -= 360f;
             markerOptions = new MarkerOptions()
                     .position(country.getLocation())
                     .icon(BitmapDescriptorFactory.defaultMarker(hue))

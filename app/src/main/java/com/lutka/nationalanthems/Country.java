@@ -107,16 +107,36 @@ public class Country
 
     public int getFlagResourceId(Resources resources, String packageName)
     {
-        return resources.getIdentifier(this.code, "drawable", packageName);
+        int id = resources.getIdentifier(this.code, "drawable", packageName);
+        if (id == 0)
+            throw new Resources.NotFoundException("Cannot find flag for country "+name+". Code: "+code);
+        else
+            return id;
+    }
+
+    private Palette.Swatch getSwatch()
+    {
+        if (palette == null) return null;
+        else if (palette.getLightMutedSwatch() != null)
+            return palette.getLightMutedSwatch();
+        else if (palette.getDarkVibrantSwatch() != null)
+            return palette.getDarkVibrantSwatch();
+        else if (palette.getVibrantSwatch() != null)
+            return palette.getVibrantSwatch();
+        else if (palette.getSwatches().isEmpty())
+            return null;
+        else
+            return palette.getSwatches().get(0);
     }
 
     public int getColor()
     {
-        if (palette != null)
+        Palette.Swatch swatch = getSwatch();
+        if (swatch == null)
             return Color.RED;
         else
         {
-            return palette.getVibrantColor(Color.RED);
+            return swatch.getRgb();
         }
     }
 
@@ -124,9 +144,9 @@ public class Country
     {
         try
         {
-            return palette.getLightVibrantSwatch().getHsl()[0];
+            return getSwatch().getHsl()[0];
         }
-        catch (NullPointerException e)
+        catch (Exception e)
         {
             return 0f;
         }
