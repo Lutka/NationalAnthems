@@ -70,6 +70,9 @@ public class MapActivity extends FragmentActivity implements GoogleMap.OnMarkerC
                         publishProgress(country);
                     }
                 });
+                for (Country country : europeCountries.getEuropeanCountries())
+                    if (country.anthemExists(getAssets()) == false)
+                        Log.e("Anthem file missing", "No anthem file for "+country+". Expected file "+country.getAnthem());
                 return null;
             }
 
