@@ -21,6 +21,10 @@ public class EuropeCountries
         return europeanCountries;
     }
 
+    //Array of European Countries and all necessary information related to them
+    //I have used country codes in order to make life easier when using assets such: flags and audio files
+    //LatLng coordinates are coordinates of the capital
+    // value isEUMember  - not used currently but might be used in the future
     public EuropeCountries()
     {
         europeanCountries = new Country[]{
@@ -73,7 +77,7 @@ public class EuropeCountries
         return  europeanCountries.length;
     }
 
-
+    //use to generate color palette necessary for assigning colors to the markers
     public void generateColorPalettes(Resources resources, String packageName, CountryColorPaletteListener countryColorPaletteListener)
     {
         for (Country country : europeanCountries)

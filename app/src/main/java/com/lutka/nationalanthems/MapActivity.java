@@ -53,16 +53,6 @@ public class MapActivity extends FragmentActivity implements GoogleMap.OnInfoWin
     Timer mediaControlUpdateTimer = null;
     // ui handler handles task from timer thread and executes is in the ui thread to update media controls
     Handler uiHandler = new Handler();
-    private Menu menu;
-
-/*
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu)
-    {
-        getMenuInflater().inflate(R., menu);
-        SearchManager manager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-       // SearchView searchView = menu.findView
-    }*/
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -103,7 +93,7 @@ public class MapActivity extends FragmentActivity implements GoogleMap.OnInfoWin
 
     }
 
-    //method to play anthem, done using media palyer
+    //method to play anthem, done using media player
     public void playAnthem(Marker marker)
     {
         if(mediaPlayer == null)
@@ -189,7 +179,7 @@ public class MapActivity extends FragmentActivity implements GoogleMap.OnInfoWin
         }
     }
 
-    //this method is used to set up map on the start, sa ol the listeners are here as well as
+    //this method is used to set up map on the start, all the listeners are here as well as
     // zooming the map onto chosen location (in this case Europe) with chosen zoom factor.
     private void setUpMap()
     {
@@ -202,8 +192,7 @@ public class MapActivity extends FragmentActivity implements GoogleMap.OnInfoWin
 
     }
 
-
-    //
+    //create marker and add it to marker-country hash map
     void addCountryPin(Country country)
     {
         float hue = country.getHue();
@@ -221,7 +210,7 @@ public class MapActivity extends FragmentActivity implements GoogleMap.OnInfoWin
         markerCountryHashMap.put(marker, country);
     }
 
-    //add pins assigned to countries onto the map
+    //build up marker-country hash map
     private void addPins()
     {
         for (Country country : europeCountries.getEuropeanCountries())
@@ -230,6 +219,7 @@ public class MapActivity extends FragmentActivity implements GoogleMap.OnInfoWin
         }
     }
 
+    //action when info window has been clicked: play anthem, show country dialog
     @Override
     public void onInfoWindowClick(Marker marker)
     {
@@ -237,6 +227,7 @@ public class MapActivity extends FragmentActivity implements GoogleMap.OnInfoWin
         showCountryDialog(markerCountryHashMap.get(marker));
     }
 
+    //mainly used for landscape orientation
     @Override
     public void onMapClick(LatLng latLng)
     {
@@ -254,7 +245,7 @@ public class MapActivity extends FragmentActivity implements GoogleMap.OnInfoWin
         }
     }
 
-
+    //use for updating state of media control relatively to any action made, eg. stop button being pressed
     void updateMediaControl(final MediaPlayer mediaPlayer)
     {
         if (this.mediaControlLayout != null)
@@ -262,6 +253,7 @@ public class MapActivity extends FragmentActivity implements GoogleMap.OnInfoWin
             ImageButton imageButton = (ImageButton) mediaControlLayout.findViewById(R.id.btnStartStop);
             SeekBar seekBar = (SeekBar) mediaControlLayout.findViewById(R.id.seekBar);
 
+            //used seekBar to display how much of the anthem was played
             seekBar.setMax(mediaPlayer.getDuration());
             seekBar.setProgress(mediaPlayer.getCurrentPosition());
             seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener()
@@ -284,7 +276,7 @@ public class MapActivity extends FragmentActivity implements GoogleMap.OnInfoWin
                     mediaPlayer.seekTo(seekBar.getProgress());
                 }
             });
-
+            //setting pause, play image depending on the state of the mediaPlayer
             if (mediaPlayer.isPlaying())
             {
                 imageButton.setImageResource(android.R.drawable.ic_media_pause);
@@ -314,6 +306,7 @@ public class MapActivity extends FragmentActivity implements GoogleMap.OnInfoWin
         }
     }
 
+    //country dialog displayed when a particular country pin has been clicked
     void showCountryDialog(Country country)
     {
         LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
@@ -345,7 +338,7 @@ public class MapActivity extends FragmentActivity implements GoogleMap.OnInfoWin
         {
             tvLyrics.setText("");
         }
-
+        // to display particular countries flag
         ImageView flag = (ImageView) dialogView.findViewById(R.id.flag);
         flag.setImageResource(country.getFlagResourceId(getResources(), getPackageName()));
         final Dialog dialog = builder.create();

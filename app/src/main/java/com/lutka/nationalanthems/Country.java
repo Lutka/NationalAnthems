@@ -41,6 +41,8 @@ public class Country
         this.anthem = "ogg/" +code + ".ogg";
     }
 
+    //use to pick a colour for the country pin, pick intuitively by looking at the flag
+    //it picks the dominating color and assigns it to Country.palette attribute
     public void generateColorPalette(Resources resources, String packageName)
     {
         BitmapDrawable drawable = (BitmapDrawable) resources.getDrawable(getFlagResourceId(resources, packageName));
@@ -101,6 +103,7 @@ public class Country
         return String.format(Locale.ENGLISH, "lyrics/%s.txt", this.code);
     }
 
+    //use to read lyrics from file
     public CharSequence getLyrics(AssetManager assetManager) throws IOException
     {
         final int BUFFER_SIZE = 100;
@@ -128,6 +131,7 @@ public class Country
         else return string;
     }
 
+    //used to get flag resource id
     public int getFlagResourceId(Resources resources, String packageName)
     {
         int id = resources.getIdentifier(this.code, "drawable", packageName);
@@ -137,6 +141,7 @@ public class Country
             return id;
     }
 
+    //use to pick the color for the pin
     private Palette.Swatch getSwatch()
     {
         if (palette == null) return null;
@@ -152,6 +157,7 @@ public class Country
             return palette.getSwatches().get(0);
     }
 
+    //use to get int value for the pin colour
     public int getColor()
     {
         Palette.Swatch swatch = getSwatch();
