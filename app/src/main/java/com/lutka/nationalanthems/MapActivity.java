@@ -8,6 +8,8 @@ having a screen which have lyrics there and allow playing anthem again, required
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.AssetFileDescriptor;
 import android.media.MediaPlayer;
@@ -17,9 +19,11 @@ import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.SearchView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -36,22 +40,33 @@ import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class MapActivity extends FragmentActivity implements GoogleMap.OnMarkerClickListener, GoogleMap.OnInfoWindowClickListener, GoogleMap.OnMapClickListener
+public class MapActivity extends FragmentActivity implements GoogleMap.OnInfoWindowClickListener, GoogleMap.OnMapClickListener
 {
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     EuropeCountries europeCountries = new EuropeCountries();
+    //hash map hashing markers with countries
     HashMap<Marker, Country> markerCountryHashMap = new HashMap<Marker, Country>();
+    //media player to play anthems
     private MediaPlayer mediaPlayer = null;
     View mediaControlLayout = null;
     Timer mediaControlUpdateTimer = null;
     // ui handler handles task from timer thread and executes is in the ui thread to update media controls
     Handler uiHandler = new Handler();
+    private Menu menu;
+
+/*
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
+        getMenuInflater().inflate(R., menu);
+        SearchManager manager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+       // SearchView searchView = menu.findView
+    }*/
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
 
@@ -70,12 +85,14 @@ public class MapActivity extends FragmentActivity implements GoogleMap.OnMarkerC
                         publishProgress(country);
                     }
                 });
+                //log error to check what resources are missing
                 for (Country country : europeCountries.getEuropeanCountries())
                     if (country.anthemExists(getAssets()) == false)
                         Log.e("Anthem file missing", "No anthem file for "+country+". Expected file "+country.getAnthem());
                 return null;
             }
 
+            //add country pins to the map
             @Override
             protected void onProgressUpdate(Country... values)
             {
@@ -86,6 +103,7 @@ public class MapActivity extends FragmentActivity implements GoogleMap.OnMarkerC
 
     }
 
+    //method to play anthem, done using media palyer
     public void playAnthem(Marker marker)
     {
         if(mediaPlayer == null)
@@ -171,9 +189,10 @@ public class MapActivity extends FragmentActivity implements GoogleMap.OnMarkerC
         }
     }
 
+    //this method is used to set up map on the start, sa ol the listeners are here as well as
+    // zooming the map onto chosen location (in this case Europe) with chosen zoom factor.
     private void setUpMap()
     {
-        mMap.setOnMarkerClickListener(this);
         mMap.setOnInfoWindowClickListener(this);
         mMap.setOnMapClickListener(this);
         // hide option to navigate to country and open external map
@@ -183,6 +202,8 @@ public class MapActivity extends FragmentActivity implements GoogleMap.OnMarkerC
 
     }
 
+
+    //
     void addCountryPin(Country country)
     {
         float hue = country.getHue();
@@ -200,20 +221,13 @@ public class MapActivity extends FragmentActivity implements GoogleMap.OnMarkerC
         markerCountryHashMap.put(marker, country);
     }
 
+    //add pins assigned to countries onto the map
     private void addPins()
     {
         for (Country country : europeCountries.getEuropeanCountries())
         {
             addCountryPin(country);
         }
-    }
-
-    @Override
-    public boolean onMarkerClick(Marker marker)
-    {
-        stopMediaPlayer();
-       // Toast.makeText(this, marker.getTitle(), Toast.LENGTH_SHORT).show();
-        return false;
     }
 
     @Override
