@@ -81,6 +81,12 @@ public class Country
         }
     }
 
+    /**
+     * Checks if lyric file is present
+     *
+     * @param assets
+     * @return
+     */
     public boolean lyricExists(AssetManager assets)
     {
         try

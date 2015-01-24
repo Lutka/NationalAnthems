@@ -61,7 +61,7 @@ public class MapActivity extends FragmentActivity implements GoogleMap.OnInfoWin
         setContentView(R.layout.activity_map);
 
         setUpMapIfNeeded();
-
+        //asyncTask for multithreading: getting marker colours and checking for missing resources: lyrics and national anthems .ogg files
         new AsyncTask<Void, Country, Void>()
         {
             @Override
