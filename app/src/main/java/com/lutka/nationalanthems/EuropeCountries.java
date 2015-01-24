@@ -33,7 +33,7 @@ public class EuropeCountries
                 new Country("Ireland", "ie", new LatLng(53.3243201,-6.25169511), true),
                 new Country("United Kingdom", "uk", new LatLng(51.5286416,-0.101598711), true),
                 new Country("Germany", "de", new LatLng(52.5075419,13.4251364), true),
-                new Country("Netherlands", "de", new LatLng(52.3747158,4.8986142), true),
+                new Country("Netherlands", "nl", new LatLng(52.3747158, 4.8986142), true),
                 new Country("Belgium", "be", new LatLng(50.8387,4.363405), true),
                 new Country("France", "fr", new LatLng(48.8588589,2.3470599), true),
                 new Country("Spain", "es", new LatLng(40.4378271,-3.6795366), true),
