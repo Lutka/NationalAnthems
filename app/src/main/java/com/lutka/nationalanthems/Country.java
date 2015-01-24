@@ -29,7 +29,6 @@ public class Country
     String code;
     LatLng location;
     boolean isEUMember;
-    String anthem;
     Palette palette = null;
 
     public Country(String name, String code, LatLng location, boolean isEUMember)
@@ -38,7 +37,6 @@ public class Country
         this.code = code;
         this.location = location;
         this.isEUMember = isEUMember;
-        this.anthem = "ogg/" +code + ".ogg";
     }
 
     //use to pick a colour for the country pin, pick intuitively by looking at the flag
@@ -53,12 +51,17 @@ public class Country
 
     public String getAnthem()
     {
-        return anthem;
+        return "ogg/" + code + ".ogg";
     }
 
     public AssetFileDescriptor getAnthem(AssetManager assetManager) throws IOException
     {
-        return assetManager.openFd(anthem);
+        return assetManager.openFd(getAnthem());
+    }
+
+    public InputStream getLyric(AssetManager assetManager) throws IOException
+    {
+        return assetManager.open(getLyricName());
     }
 
     /**
@@ -74,6 +77,19 @@ public class Country
             return true;
         } catch (IOException e)
         {
+            return false;
+        }
+    }
+
+    public boolean lyricExists(AssetManager assets)
+    {
+        try
+        {
+            getLyric(assets);
+            return true;
+        } catch (IOException e)
+        {
+            e.printStackTrace();
             return false;
         }
     }
@@ -101,6 +117,11 @@ public class Country
     public String getLyricsFile()
     {
         return String.format(Locale.ENGLISH, "lyrics/%s.txt", this.code);
+    }
+
+    public String getLyricName()
+    {
+        return ("lyrics/" + code + ".txt");
     }
 
     //use to read lyrics from file

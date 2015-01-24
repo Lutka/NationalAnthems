@@ -77,8 +77,14 @@ public class MapActivity extends FragmentActivity implements GoogleMap.OnInfoWin
                 });
                 //log error to check what resources are missing
                 for (Country country : europeCountries.getEuropeanCountries())
+                {
                     if (country.anthemExists(getAssets()) == false)
-                        Log.e("Anthem file missing", "No anthem file for "+country+". Expected file "+country.getAnthem());
+                        Log.e("Anthem file missing", "No anthem file for " + country + ". Expected file " + country.getAnthem());
+
+                    if (country.lyricExists(getAssets()) == false)
+                        Log.e("Anthem file missing", "No lyric file for " + country + ". Expected file " + country.getLyricName());
+                }
+
                 return null;
             }
 
