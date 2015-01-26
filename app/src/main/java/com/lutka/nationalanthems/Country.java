@@ -22,6 +22,7 @@ import java.util.Locale;
 
 /**
  * Created by Paulina on 30/11/2014.
+ * Class representing a country which holds all its necessary attributes used in the app.
  */
 public class Country
 {

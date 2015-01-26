@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Polish translation of the used strings -->
     <string name="app_name">Hymny krajów europejskich</string>
     <string name="close">Zamknij</string>
     <string name="title_activity_map">Hymny Europejskie</string>

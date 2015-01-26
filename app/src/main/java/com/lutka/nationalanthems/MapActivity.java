@@ -1,15 +1,14 @@
 /**
  * Created by Paulina on 15/11/2014.
+ *
+ * Class where all the android action logic is implemented
+ *
  */
 package com.lutka.nationalanthems;
-/*
-having a screen which have lyrics there and allow playing anthem again, required number of times - user input
- */
+
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.SearchManager;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.AssetFileDescriptor;
 import android.media.MediaPlayer;
@@ -19,11 +18,9 @@ import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.SearchView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -42,7 +39,6 @@ import java.util.TimerTask;
 
 public class MapActivity extends FragmentActivity implements GoogleMap.OnInfoWindowClickListener, GoogleMap.OnMapClickListener
 {
-
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     EuropeCountries europeCountries = new EuropeCountries();
     //hash map hashing markers with countries
@@ -78,10 +74,10 @@ public class MapActivity extends FragmentActivity implements GoogleMap.OnInfoWin
                 //log error to check what resources are missing
                 for (Country country : europeCountries.getEuropeanCountries())
                 {
-                    if (country.anthemExists(getAssets()) == false)
+                    if (!country.anthemExists(getAssets()))
                         Log.e("Anthem file missing", "No anthem file for " + country + ". Expected file " + country.getAnthem());
 
-                    if (country.lyricExists(getAssets()) == false)
+                    if (!country.lyricExists(getAssets()))
                         Log.e("Anthem file missing", "No lyric file for " + country + ". Expected file " + country.getLyricName());
                 }
 
@@ -216,15 +212,6 @@ public class MapActivity extends FragmentActivity implements GoogleMap.OnInfoWin
         markerCountryHashMap.put(marker, country);
     }
 
-    //build up marker-country hash map
-    private void addPins()
-    {
-        for (Country country : europeCountries.getEuropeanCountries())
-        {
-            addCountryPin(country);
-        }
-    }
-
     //action when info window has been clicked: play anthem, show country dialog
     @Override
     public void onInfoWindowClick(Marker marker)
@@ -333,7 +320,7 @@ public class MapActivity extends FragmentActivity implements GoogleMap.OnInfoWin
                 });
 
         this.mediaControlLayout = dialogView.findViewById(R.id.layoutMediaControl);
-        if (country.anthemExists(getAssets()) == false)
+        if (!country.anthemExists(getAssets()))
             mediaControlLayout.setVisibility(View.GONE);
         // lyrics
         TextView tvLyrics = (TextView) dialogView.findViewById(R.id.tvLyrics);

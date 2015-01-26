@@ -6,6 +6,7 @@ import com.google.android.gms.maps.model.LatLng;
 
 /**
  * Created by Paulina on 30/11/2014.
+ * Class which works as a database for the application as it stores all the countries used in the app
  */
 public class EuropeCountries
 {
